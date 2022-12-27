@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "sequelize-cli": "^6.4.1",
+    "serverless-api-gateway-caching": "^1.9.0",
+    "serverless-offline": "^10.1.0",
+    "serverless-plugin-typescript": "^2.1.4",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.104",
+    "@types/node": "^18.7.18",
+    "dotenv": "^16.0.2",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.23.0",
+    "ts-node": "^10.9.1"
+  }
+}

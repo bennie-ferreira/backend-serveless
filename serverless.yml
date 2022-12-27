@@ -1,0 +1,106 @@
+org: surewildcat
+console: true
+service: backend-serverless-code7
+frameworkVersion: '3'
+configValidationMode: warn
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-api-gateway-caching
+
+custom:
+  apiGatewayCaching:
+    enabled: true
+    clusterSize: '0.5' 
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  httpApi:
+    cors: true
+  environment:
+    dbhost: ${file(./config-${opt:stage, 'dev'}.json):dataBaseHost}
+    dbport: ${file(./config-${opt:stage, 'dev'}.json):dataBasePort}
+    dbname: ${file(./config-${opt:stage, 'dev'}.json):dataBaseName}
+    dbuser: ${file(./config-${opt:stage, 'dev'}.json):dataBaseUser}
+    dbpass: ${file(./config-${opt:stage, 'dev'}.json):dataBasePass}
+
+functions:
+  listAllProduct:
+    handler: functions/Product/handler.listAllProduct
+    description: List all products
+    events:
+      - http:
+          path: /v1/products
+          method: GET
+          cors: true
+          caching:
+            enabled: true
+            ttlInSeconds: 3600
+            allowCredentials: false
+  createProduct:
+    handler: functions/Product/handler.createProduct
+    description: Create a Product
+    events:
+      - httpApi:
+          path: /v1/products
+          method: POST
+  updateProduct:
+    handler: functions/Product/handler.updateProduct
+    description: Update a Product
+    events:
+      - httpApi:
+          path: /v1/product
+          method: PUT
+  deleteProduct:
+    handler: functions/Product/handler.deleteProduct
+    description: Delete a Product
+    events:
+      - httpApi:
+          path: /v1/product/{params}
+          method: DELETE
+  listAllProvider:
+    handler: functions/Provider/handler.listAllProvider
+    description: List all Providers
+    events:
+      - httpApi:
+          path: /v1/providers
+          method: GET
+  createProvider:
+    handler: functions/Provider/handler.createProvider
+    description: Create a Provider
+    events:
+      - httpApi:
+          path: /v1/provider
+          method: POST
+  updateProvider:
+    handler: functions/Provider/handler.updateProvider
+    description: Update a Provider
+    events:
+      - httpApi:
+          path: /v1/provider
+          method: PUT
+  deleteProvider:
+    handler: functions/Provider/handler.deleteProvider
+    description: Delete a Provider
+    events:
+      - httpApi:
+          path: /v1/provider/{params}
+          method: DELETE
+  productProviderRelationship:
+    handler: functions/Provider/handler.productProviderRelationship
+    description: Create a Product Relationship Provider
+    events:
+      - httpApi:
+          path: /v1/providers/product/create
+          method: POST
+  listAllproductProviderRelationship:
+    handler: functions/Provider/handler.listAllproductProviderRelationship
+    description: List all Product X Provider
+    events:
+      - httpApi:
+          path: /v1/providers/product
+          method: GET
